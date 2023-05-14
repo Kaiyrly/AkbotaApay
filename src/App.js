@@ -68,16 +68,30 @@ function Table({ data, isEditing, setIsEditing, handleSaveEdit, handleInputChang
 function App() {
   const [dataInvariant, setDataInvariant] = useState(initialDataInvariant);
   const [dataVariant, setDataVariant] = useState(initialDataVariant);
-  const [newRow, setNewRow] = useState(['', '', '', '', '', '', '', '']);
-  const [isEditing, setIsEditing] = useState(null);
+  const [newRowInvariant, setNewRowInvariant] = useState(['', '', '', '', '', '', '', '']);
+  const [newRowVariant, setNewRowVariant] = useState(['', '', '', '', '', '', '', '']);
+  const [isEditing, setIsEditing] = useState({ row: null, values: [] });
 
-  const handleInputChange = (e, index) => {
+  const handleInputChange = (e, index, isVariantTable) => {
     const { value } = e.target;
     setIsEditing(prev => {
       const newValues = [...prev.values];
       newValues[index] = value;
       return { ...prev, values: newValues };
     });
+    if (isVariantTable) {
+      setNewRowVariant(prevRow => {
+        const newRowValues = [...prevRow];
+        newRowValues[index] = value;
+        return newRowValues;
+      });
+    } else {
+      setNewRowInvariant(prevRow => {
+        const newRowValues = [...prevRow];
+        newRowValues[index] = value;
+        return newRowValues;
+      });
+    }
   };
 
   const handleSaveEdit = (index) => {
@@ -111,66 +125,81 @@ function App() {
       }
     }
 
-    console.log(columnTotals)
+    console.log(columnTotals);
 
     data[lastRowIndex] = ['', 'Инварианттық оқу жүктемесі', ...columnTotals];
   };
 
-  const handleAddRow = (setData) => {
+  const handleAddRow = (setData, isVariantTable) => {
     // Calculate the total for the week
     let totalForWeek = 0;
+    const newRowValues = isVariantTable ? newRowVariant.slice(0, 6) : newRowInvariant.slice(0, 6);
     for (let i = 2; i < 6; i++) {
-      totalForWeek += isNaN(parseFloat(newRow[i])) ? 0 : parseFloat(newRow[i]);
+      totalForWeek += isNaN(parseFloat(newRowValues[i])) ? 0 : parseFloat(newRowValues[i]);
     }
     // Calculate the total for the year
     const totalForYear = totalForWeek * 36; // Assuming there are 36 weeks in a school year
+    const rowToAdd = [...newRowValues, totalForWeek.toString(), totalForYear.toString()];
 
-    const rowToAdd = [...newRow.slice(0, 6), totalForWeek.toString(), totalForYear.toString()];
+// Insert the new row at the second to last position in the data array
+setData(prevData => {
+let newData = [...prevData.slice(0, prevData.length - 1), rowToAdd, prevData[prevData.length - 1]];
 
-    // Insert the new row at the second to last position in the data array
-    setData(prevData => {
-      let newData = [...prevData.slice(0, prevData.length - 1), rowToAdd, prevData[prevData.length - 1]];
+recalculateLastRow(newData); // Recalculate the last row
 
-      recalculateLastRow(newData); // Recalculate the last row
+return newData;
+});
 
-      return newData;
-    });
+if (isVariantTable) {
+setNewRowVariant(['', '', '', '', '', '', '', '']);
+} else {
+setNewRowInvariant(['', '', '', '', '', '', '', '']);
+}
+};
 
-    setNewRow(['', '', '', '', '', '', '', '']);
-  };
+return (
 
-  return (
-    <div className="App">
-      <Table
-        data={dataInvariant}
-        isEditing={isEditing}
-        setIsEditing={setIsEditing}
-        handleSaveEdit={handleSaveEdit}
-        handleInputChange={handleInputChange}
+<div className="App">
+  <Table
+    data={dataInvariant}
+    isEditing={isEditing}
+    setIsEditing={setIsEditing}
+    handleSaveEdit={handleSaveEdit}
+    handleInputChange={(e, index) => handleInputChange(e, index, false)}
+  />
+  <div>
+    {newRowInvariant.slice(0, 6).map((cell, index) => (
+      <input
+        key={index}
+        value={cell}
+        onChange={(e) => handleInputChange(e, index, false)}
       />
-
-      <div>
-        {newRow.slice(0, 6).map((cell, index) => (
-          <input key={index} value={cell} onChange={e => handleInputChange(e, index)} />
-        ))}
-        <button onClick={() => handleAddRow(setDataInvariant)}>Add Row</button>
-      </div>
-
-      <Table
-        data={dataVariant}
-        isEditing={isEditing}
-        setIsEditing={setIsEditing}
-        handleSaveEdit={handleSaveEdit}
-        handleInputChange={handleInputChange}
+    ))}
+    <button onClick={() => handleAddRow(setDataInvariant, false)}>
+      Add Row
+    </button>
+  </div>
+  <Table
+    data={dataVariant}
+    isEditing={isEditing}
+    setIsEditing={setIsEditing}
+    handleSaveEdit={handleSaveEdit}
+    handleInputChange={(e, index) => handleInputChange(e, index, true)}
+  />
+  <div>
+    {newRowVariant.slice(0, 6).map((cell, index) => (
+      <input
+        key={index}
+        value={cell}
+        onChange={(e) => handleInputChange(e, index, true)}
       />
-      <div>
-        {newRow.slice(0, 6).map((cell, index) => (
-          <input key={index} value={cell} onChange={e => handleInputChange(e, index)} />
-        ))}
-        <button onClick={() => handleAddRow(setDataVariant)}>Add Row</button>
-      </div>
-    </div>
-  );
+    ))}
+    <button onClick={() => handleAddRow(setDataVariant, true)}>
+      Add Row
+    </button>
+  </div>
+</div>
+);
 }
 
 export default App;
