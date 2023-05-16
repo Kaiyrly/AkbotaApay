@@ -43,7 +43,7 @@ function Table({ data, columnLabels, handleInputChange, handleDeleteRow, handleD
             <TableCell key={index}>
               {heading}
               {(index > 1 && index < columnLabels.length - 2) && (
-                <DeleteButton onClick={() => handleDeleteColumn(index)}>Сыныпты жою</DeleteButton>
+                <DeleteButton onClick={() => handleDeleteColumn(index)}>Бағанды жою</DeleteButton>
               )}
             </TableCell>
           ))}

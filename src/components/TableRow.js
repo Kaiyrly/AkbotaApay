@@ -35,28 +35,31 @@ const EditableInput = styled('input')({
 });
 
 function TableRow({ row, handleInputChange, handleDeleteRow, rowIndex, isVariantTable, isLastRow }) {
-  return (
-    <TableRowContainer>
-      {row.map((cell, cellIndex) => {
-        const isEditable = cellIndex > 0 && cellIndex < row.length - 2 && !isLastRow;
-        return (
-          <TableCell key={cellIndex}>
-            {isEditable ? (
-              <EditableInput
-                value={cell}
-                onChange={(e) => handleInputChange(e, rowIndex, cellIndex, isVariantTable)}
-              />
-            ) : (
-              cell
-            )}
-          </TableCell>
-        );
-      })}
-      <TableCell>
-        <DeleteButton onClick={() => handleDeleteRow(rowIndex, isVariantTable)}>Пәнді жою</DeleteButton>
-      </TableCell>
-    </TableRowContainer>
-  );
-}
-
+    return (
+      <TableRowContainer>
+        {!isLastRow && <TableCell>{rowIndex + 1}</TableCell>}
+        {row.map((cell, cellIndex) => {
+          const isEditable = cellIndex > 0 && cellIndex < row.length - 2 && !isLastRow;
+          return (
+            <TableCell key={cellIndex}>
+              {isEditable ? (
+                <EditableInput
+                  value={cell}
+                  onChange={(e) => handleInputChange(e, rowIndex, cellIndex, isVariantTable)}
+                />
+              ) : (
+                cell
+              )}
+            </TableCell>
+          );
+        })}
+        <TableCell>
+          <DeleteButton onClick={() => handleDeleteRow(rowIndex, isVariantTable)}>Пәнді жою</DeleteButton>
+        </TableCell>
+      </TableRowContainer>
+    );
+  }
+  
 export default TableRow;
+  
+
