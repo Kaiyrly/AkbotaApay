@@ -2,7 +2,7 @@ import React from 'react';
 import { styled } from '@mui/material/styles';
 
 const TableRowContainer = styled('tr')({
-  '&:nth-child(even)': {
+  '&:nh-of-type".(even)': {
     backgroundColor: '#f9f9f9',
   },
 });

@@ -12,7 +12,7 @@ const TableHead = styled('thead')({
 });
 
 const TableBody = styled('tbody')({
-  '& tr:nth-child(even)': {
+  '& tr:nth-of-type".(even)': {
     backgroundColor: '#f9f9f9',
   },
 });

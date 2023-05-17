@@ -1,6 +1,11 @@
-/* App.css */
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 20px;
+}
 
-.App {
+.app {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -21,39 +26,56 @@
   background-color: #45a049;
 }
 
-.modal {
-  position: fixed;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: #fff;
-  padding: 20px;
-  border-radius: 4px;
-  max-width: 400px;
-  width: 100%;
+.document-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
-.form-label {
-  display: block;
-  margin-bottom: 8px;
+.document-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px;
+  border-bottom: 1px solid #ccc;
+}
+
+.document-title {
+  color: #000;
+  text-decoration: none;
   font-weight: bold;
 }
 
+.document-title:hover {
+  text-decoration: underline;
+}
+
+.delete-button:hover {
+  background-color: #e53935;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.form-input-container {
+  display: flex;
+  align-items: center;
+}
+
 .form-input {
-  width: 100%;
+  width: 300px;
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 4px;
   box-sizing: border-box;
-  margin-bottom: 16px;
+  margin-right: 10px;
 }
 
-.form-button-container {
-  display: flex;
-  justify-content: space-between;
-}
-
-.form-button {
+.button-create {
   padding: 8px 16px;
   background-color: #4caf50;
   color: white;
@@ -62,6 +84,16 @@
   cursor: pointer;
 }
 
-.form-button:hover {
+.button-create:hover {
   background-color: #45a049;
+}
+
+.edit-button,
+.delete-button {
+  background: none;
+  border: none;
+  color: green;
+  cursor: pointer;
+  font-weight: bold;
+  text-decoration: underline;
 }
