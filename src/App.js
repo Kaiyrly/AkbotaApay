@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Link, Routes } from 'react-router-dom';
 import DocumentPage from './pages/DocumentPage';
 import './styles/App.css';
 
-const API_URL = 'http://localhost:5001/documents';
+const API_URL = 'https://table-change.herokuapp.com/documents';
 
 const initialDataInvariant = [
   ['Әліппе, Ана тілі', '6', '0', '0', '0', '6', '210'],
