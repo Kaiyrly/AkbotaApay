@@ -119,15 +119,13 @@ function App() {
                         >
                           {document.title}
                         </Link>
-                        <div className="document-buttons">
-                          <button
-                            className="delete-button"
-                            onClick={() => deleteDocument(document.id)}
-                          >
-                            Жою
-                          </button>
-                        </div>
                       </div>
+                      <button
+                        className="delete-button"
+                        onClick={() => deleteDocument(document.id)}
+                      >
+                        Жою
+                      </button>
                     </li>
                   ))}
                 </ul>
@@ -139,6 +137,7 @@ function App() {
       </div>
     </Router>
   );
+  
 }
 
 export default App;

@@ -40,11 +40,6 @@
   border-bottom: 1px solid #ccc;
 }
 
-.document-title {
-  color: #000;
-  text-decoration: none;
-  font-weight: bold;
-}
 
 .document-title:hover {
   text-decoration: underline;
@@ -73,6 +68,13 @@
   border-radius: 4px;
   box-sizing: border-box;
   margin-right: 10px;
+}
+
+.document-title {
+  color: #000;
+  text-decoration: none;
+  font-size: 18px; 
+  font-family: "Arial", sans-serif;
 }
 
 .button-create {
