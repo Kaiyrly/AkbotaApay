@@ -35,7 +35,7 @@ function DocumentPage() {
     const fetchDocument = async () => {
       try {
         const response = await axios.get(`${API_URL}/${id}`);
-        const { dataInvariant, dataVariant, columnLabels} = response.data;
+        const { dataInvariant, dataVariant, columnLabels } = response.data;
         setDataInvariant(dataInvariant);
         setDataVariant(dataVariant);
         setColumnLabels(columnLabels);
@@ -43,11 +43,15 @@ function DocumentPage() {
         console.error('Error fetching document:', error);
       }
     };
-
+  
     if (dataInvariant.length === 0 && dataVariant.length === 0 && columnLabels.length === 0) {
       fetchDocument();
+    } else if (dataInvariant.length > 0 && dataVariant.length > 0 && columnLabels.length > 0) {
+      recalculateLastRow();
     }
   }, [id, dataInvariant.length, dataVariant.length, columnLabels.length]);
+  
+
 
   const saveDocument = async () => {
     try {
@@ -101,8 +105,6 @@ function DocumentPage() {
           newData[rowIndex][newData[rowIndex].length - 2] = totalForWeek.toString();
           newData[rowIndex][newData[rowIndex].length - 1] = totalForYear.toString();
         }
-
-        recalculateLastRow(newData, true);
         return newData;
       });
     } else {
@@ -119,11 +121,11 @@ function DocumentPage() {
           newData[rowIndex][newData[rowIndex].length - 2] = totalForWeek.toString();
           newData[rowIndex][newData[rowIndex].length - 1] = totalForYear.toString();
         }
-  
-        recalculateLastRow(newData, false);
         return newData;
       });
     }
+
+    recalculateLastRow();
   };
   
   
@@ -148,32 +150,52 @@ function DocumentPage() {
   
   
 
-  const recalculateLastRow = (data, isVariant) => {
-    const lastRowIndex = data.length - 1;
-    let columnTotals = Array(columnLabels.length - 2).fill(0);
+    const recalculateLastRow = () => {
+        let invariantLast = []
+        console.log(dataInvariant, dataVariant, columnLabels)
+        setDataInvariant(prevData => {
+            const newData = [...prevData];
+            const lastRowIndex = newData.length - 1;
+            console.log(columnLabels)
+            let columnTotals = Array(columnLabels.length - 2).fill(0);
+            for (let i = 0; i < lastRowIndex; i++) {
+                for (let j = 1; j < columnLabels.length; j++) {
+                    const cellValue = parseFloat(newData[i][j]);
+                    if (!isNaN(cellValue)) {
+                        columnTotals[j - 1] += cellValue;
+                    }
+                }
+            }
+        
+            newData[lastRowIndex] = [...newData[lastRowIndex].slice(0, 2), ...columnTotals];
+            invariantLast = newData[lastRowIndex]
+            return newData;
+        });
+
+        setDataVariant(prevData => {
+            const newData = [...prevData];
+            const lastRowIndex = newData.length - 1;
+        
+            let columnTotals = invariantLast.slice(2, columnLabels.length);
+            console.log(invariantLast.slice(2, columnLabels.length))
+            for (let i = 0; i < lastRowIndex; i++) {
+                for (let j = 1; j < columnLabels.length; j++) {
+                    const cellValue = parseFloat(newData[i][j]);
+                    if (!isNaN(cellValue)) {
+                        columnTotals[j - 1] += cellValue;
+                    }
+                }
+            }
+            newData[lastRowIndex] = [...newData[lastRowIndex].slice(0, 2), ...columnTotals];
+            
+            return newData;
+        });
+        
+       
+    };
+      
   
-    for (let i = 0; i < lastRowIndex; i++) {
-      for (let j = 2; j < columnLabels.length; j++) {
-        const cellValue = parseFloat(data[i][j]);
-        if (!isNaN(cellValue)) {
-          columnTotals[j - 2] += cellValue;
-        }
-      }
-    }
   
-    if (isVariant) {
-      const invariantLastRow = dataInvariant[dataInvariant.length - 1];
-      for (let j = 2; j < columnLabels.length - 2; j++) {
-        const cellValue = parseFloat(invariantLastRow[j]);
-        if (!isNaN(cellValue)) {
-          columnTotals[j - 2] += cellValue;
-        }
-      }
-    }
-  
-    const newLabel = isVariant ? 'Ең жоғарғы оқу жүктемесі' : 'Инварианттық оқу жүктемесі';
-    data[lastRowIndex] = ['', newLabel, ...columnTotals];
-  };
   
   
 
@@ -192,10 +214,10 @@ function DocumentPage() {
     setData(prevData => {
       let newData = [...prevData.slice(0, prevData.length - 1), rowToAdd, prevData[prevData.length - 1]];
 
-      recalculateLastRow(newData); // Recalculate the last row
-
+      
       return newData;
     });
+    recalculateLastRow();
 
     if (isVariantTable) {
       setNewRowVariant(['', '', '', '', '', '', '', '']);
@@ -210,17 +232,17 @@ function DocumentPage() {
       setDataVariant(prevData => {
         const newData = [...prevData];
         newData.splice(index, 1);
-        recalculateLastRow(newData, true); // Recalculate the last row
         return newData;
       });
     } else {
       setDataInvariant(prevData => {
         const newData = [...prevData];
         newData.splice(index, 1);
-        recalculateLastRow(newData, false); // Recalculate the last row
         return newData;
       });
     }
+
+    recalculateLastRow();
     
   };
 
