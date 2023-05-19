@@ -49,7 +49,7 @@ function DocumentPage() {
     } else if (dataInvariant.length > 0 && dataVariant.length > 0 && columnLabels.length > 0) {
       recalculateLastRow();
     }
-  }, [id, dataInvariant.length, dataVariant.length, columnLabels.length]);
+  }, [id, dataInvariant.length, dataVariant.length, columnLabels.length, recalculateLastRow]);
   
 
 
