@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams } from 'react-router-dom';
 import Modal from 'react-modal';
 import Table from '../components/Table';
@@ -30,6 +30,52 @@ function DocumentPage() {
   const [isAddRowModalOpen, setIsAddRowModalOpen] = useState(false);
   const [isAddColumnModalOpen, setIsAddColumnModalOpen] = useState(false);
   const [isVariantTable, setIsVariantTable] = useState(false);
+
+
+
+  const recalculateLastRow = useCallback(() => {
+    let invariantLast = []
+    console.log(dataInvariant, dataVariant, columnLabels)
+    setDataInvariant(prevData => {
+        const newData = [...prevData];
+        const lastRowIndex = newData.length - 1;
+        console.log(columnLabels)
+        let columnTotals = Array(columnLabels.length - 2).fill(0);
+        for (let i = 0; i < lastRowIndex; i++) {
+            for (let j = 1; j < columnLabels.length; j++) {
+                const cellValue = parseFloat(newData[i][j]);
+                if (!isNaN(cellValue)) {
+                    columnTotals[j - 1] += cellValue;
+                }
+            }
+        }
+    
+        newData[lastRowIndex] = [...newData[lastRowIndex].slice(0, 2), ...columnTotals];
+        invariantLast = newData[lastRowIndex]
+        return newData;
+    });
+
+    setDataVariant(prevData => {
+        const newData = [...prevData];
+        const lastRowIndex = newData.length - 1;
+    
+        let columnTotals = invariantLast.slice(2, columnLabels.length);
+        console.log(invariantLast.slice(2, columnLabels.length))
+        for (let i = 0; i < lastRowIndex; i++) {
+            for (let j = 1; j < columnLabels.length; j++) {
+                const cellValue = parseFloat(newData[i][j]);
+                if (!isNaN(cellValue)) {
+                    columnTotals[j - 1] += cellValue;
+                }
+            }
+        }
+        newData[lastRowIndex] = [...newData[lastRowIndex].slice(0, 2), ...columnTotals];
+        
+        return newData;
+    });
+    
+   
+}, [dataInvariant, dataVariant, columnLabels]);
 
   useEffect(() => {
     const fetchDocument = async () => {
@@ -147,52 +193,6 @@ function DocumentPage() {
       });
     }
   };
-  
-  
-
-    const recalculateLastRow = () => {
-        let invariantLast = []
-        console.log(dataInvariant, dataVariant, columnLabels)
-        setDataInvariant(prevData => {
-            const newData = [...prevData];
-            const lastRowIndex = newData.length - 1;
-            console.log(columnLabels)
-            let columnTotals = Array(columnLabels.length - 2).fill(0);
-            for (let i = 0; i < lastRowIndex; i++) {
-                for (let j = 1; j < columnLabels.length; j++) {
-                    const cellValue = parseFloat(newData[i][j]);
-                    if (!isNaN(cellValue)) {
-                        columnTotals[j - 1] += cellValue;
-                    }
-                }
-            }
-        
-            newData[lastRowIndex] = [...newData[lastRowIndex].slice(0, 2), ...columnTotals];
-            invariantLast = newData[lastRowIndex]
-            return newData;
-        });
-
-        setDataVariant(prevData => {
-            const newData = [...prevData];
-            const lastRowIndex = newData.length - 1;
-        
-            let columnTotals = invariantLast.slice(2, columnLabels.length);
-            console.log(invariantLast.slice(2, columnLabels.length))
-            for (let i = 0; i < lastRowIndex; i++) {
-                for (let j = 1; j < columnLabels.length; j++) {
-                    const cellValue = parseFloat(newData[i][j]);
-                    if (!isNaN(cellValue)) {
-                        columnTotals[j - 1] += cellValue;
-                    }
-                }
-            }
-            newData[lastRowIndex] = [...newData[lastRowIndex].slice(0, 2), ...columnTotals];
-            
-            return newData;
-        });
-        
-       
-    };
       
   
   
