@@ -144,7 +144,7 @@ function DocumentPage() {
 
         if (rowIndex !== newData.length - 1) {
           let totalForWeek = 0;
-          for (let i = 2; i < newData[rowIndex].length - 2; i++) {
+          for (let i = 1; i < newData[rowIndex].length - 2; i++) {
             totalForWeek += isNaN(parseFloat(newData[rowIndex][i])) ? 0 : parseFloat(newData[rowIndex][i]);
           }
           const totalForYear = totalForWeek * 36;
@@ -160,7 +160,7 @@ function DocumentPage() {
   
         if (rowIndex !== newData.length - 1) {
           let totalForWeek = 0;
-          for (let i = 2; i < newData[rowIndex].length - 2; i++) {
+          for (let i = 1; i < newData[rowIndex].length - 2; i++) {
             totalForWeek += isNaN(parseFloat(newData[rowIndex][i])) ? 0 : parseFloat(newData[rowIndex][i]);
           }
           const totalForYear = totalForWeek * 36;
@@ -203,7 +203,7 @@ function DocumentPage() {
     // Calculate the total for the week
     let totalForWeek = 0;
     const newRowValues = isVariantTable ? newRowVariant.slice(0, columnLabels.length - 3) : newRowInvariant.slice(0, columnLabels.length - 3);
-    for (let i = 2; i < columnLabels.length - 2; i++) {
+    for (let i = 1; i < columnLabels.length - 2; i++) {
       totalForWeek += isNaN(parseFloat(newRowValues[i])) ? 0 : parseFloat(newRowValues[i]);
     }
     // Calculate the total for the year
